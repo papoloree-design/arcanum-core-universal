@@ -1,0 +1,13 @@
+name = "soberano-worker"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# Variables de entorno
+[env.production]
+name = "soberano-worker-prod"
+vars = { ENVIRONMENT = "production" }
+
+# KV Namespaces (opcional)
+# [[kv_namespaces]]
+# binding = "BYTES"
+# id = "your-kv-namespace-id"
