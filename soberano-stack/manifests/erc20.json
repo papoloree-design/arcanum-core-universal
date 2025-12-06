@@ -1,0 +1,30 @@
+{
+  "name": "SoberanoERC20",
+  "type": "erc20",
+  "version": "1.0.0",
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.20",
+    "optimized": true,
+    "runs": 200
+  },
+  "bytecode": "bytecodes/SoberanoERC20.bin",
+  "constructor": {
+    "params": [
+      { "name": "_name", "type": "string" },
+      { "name": "_symbol", "type": "string" },
+      { "name": "_supply", "type": "uint256" }
+    ]
+  },
+  "functions": [
+    "transfer(address,uint256)",
+    "approve(address,uint256)",
+    "transferFrom(address,address,uint256)",
+    "mint(address,uint256)",
+    "burn(uint256)"
+  ],
+  "events": [
+    "Transfer(address indexed,address indexed,uint256)",
+    "Approval(address indexed,address indexed,uint256)"
+  ]
+}

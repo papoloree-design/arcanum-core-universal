@@ -1,0 +1,31 @@
+{
+  "name": "SoberanoERC721",
+  "type": "erc721",
+  "version": "1.0.0",
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.20",
+    "optimized": true,
+    "runs": 200
+  },
+  "bytecode": "bytecodes/SoberanoERC721.bin",
+  "constructor": {
+    "params": [
+      { "name": "_name", "type": "string" },
+      { "name": "_symbol", "type": "string" }
+    ]
+  },
+  "functions": [
+    "approve(address,uint256)",
+    "setApprovalForAll(address,bool)",
+    "transferFrom(address,address,uint256)",
+    "safeTransferFrom(address,address,uint256)",
+    "mint(address)",
+    "burn(uint256)"
+  ],
+  "events": [
+    "Transfer(address indexed,address indexed,uint256 indexed)",
+    "Approval(address indexed,address indexed,uint256 indexed)",
+    "ApprovalForAll(address indexed,address indexed,bool)"
+  ]
+}

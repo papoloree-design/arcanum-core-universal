@@ -1,0 +1,28 @@
+{
+  "name": "TokenFactory",
+  "type": "factory",
+  "version": "1.0.0",
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.20",
+    "optimized": true,
+    "runs": 200
+  },
+  "bytecode": "bytecodes/TokenFactory.bin",
+  "constructor": {
+    "params": []
+  },
+  "functions": [
+    "deploy(bytes,uint256)",
+    "deployCreate2(bytes,bytes32,uint256)",
+    "computeAddress(bytes32,bytes32)"
+  ],
+  "events": [
+    "ContractCreated(address indexed,address indexed,uint256)"
+  ],
+  "usage": {
+    "deploy_erc20": "factory.deploy(bytecodes.erc20, 1)",
+    "deploy_erc721": "factory.deploy(bytecodes.erc721, 2)",
+    "deploy_erc1155": "factory.deploy(bytecodes.erc1155, 3)"
+  }
+}

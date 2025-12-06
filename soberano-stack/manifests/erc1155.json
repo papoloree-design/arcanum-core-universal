@@ -1,0 +1,29 @@
+{
+  "name": "SoberanoERC1155",
+  "type": "erc1155",
+  "version": "1.0.0",
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.20",
+    "optimized": true,
+    "runs": 200
+  },
+  "bytecode": "bytecodes/SoberanoERC1155.bin",
+  "constructor": {
+    "params": []
+  },
+  "functions": [
+    "balanceOf(address,uint256)",
+    "balanceOfBatch(address[],uint256[])",
+    "setApprovalForAll(address,bool)",
+    "safeTransferFrom(address,address,uint256,uint256,bytes)",
+    "safeBatchTransferFrom(address,address,uint256[],uint256[],bytes)",
+    "mint(address,uint256,uint256)",
+    "burn(address,uint256,uint256)"
+  ],
+  "events": [
+    "TransferSingle(address indexed,address indexed,address indexed,uint256,uint256)",
+    "TransferBatch(address indexed,address indexed,address indexed,uint256[],uint256[])",
+    "ApprovalForAll(address indexed,address indexed,bool)"
+  ]
+}
