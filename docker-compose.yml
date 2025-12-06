@@ -1,0 +1,91 @@
+version: '3.9'
+
+services:
+  # MongoDB para servicios
+  mongodb:
+    image: mongo:7.0
+    container_name: aion-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: aion_omega
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - aion-network
+
+  # AION Kernel (Orquestador)
+  kernel:
+    build:
+      context: ./packages/kernel
+      dockerfile: Dockerfile
+    container_name: aion-kernel
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - MONGO_URL=mongodb://mongodb:27017
+      - DB_NAME=aion_omega
+    depends_on:
+      - mongodb
+    volumes:
+      - ./packages/kernel:/app
+      - /app/node_modules
+    networks:
+      - aion-network
+
+  # Identity Service
+  identity:
+    build:
+      context: ./packages/identity
+      dockerfile: Dockerfile
+    container_name: aion-identity
+    restart: unless-stopped
+    ports:
+      - "4100:4100"
+    environment:
+      - NODE_ENV=production
+      - PORT=4100
+      - MONGO_URL=mongodb://mongodb:27017
+      - DB_NAME=aion_omega
+    depends_on:
+      - mongodb
+    volumes:
+      - ./packages/identity:/app
+      - /app/node_modules
+    networks:
+      - aion-network
+
+  # UI (Next.js)
+  ui:
+    build:
+      context: ./packages/ui
+      dockerfile: Dockerfile
+    container_name: aion-ui
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_KERNEL_URL=http://localhost:4000
+      - NEXT_PUBLIC_IDENTITY_URL=http://localhost:4100
+    depends_on:
+      - kernel
+      - identity
+    volumes:
+      - ./packages/ui:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - aion-network
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  aion-network:
+    driver: bridge

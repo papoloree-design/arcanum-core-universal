@@ -1,0 +1,26 @@
+{
+  "name": "aion-omega-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "install:all": "yarn install && yarn workspaces run install",
+    "build:all": "yarn workspaces run build",
+    "start:kernel": "cd packages/kernel && yarn start",
+    "start:identity": "cd packages/identity && yarn start",
+    "start:ui": "cd packages/ui && yarn dev",
+    "dev": "docker-compose up",
+    "compile:contracts": "cd packages/economy && npx hardhat compile",
+    "deploy:polygon": "cd packages/economy && npx hardhat run scripts/deploy.js --network polygon",
+    "test:contracts": "cd packages/economy && npx hardhat test"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "yarn": ">=1.22.0"
+  }
+}
