@@ -1,0 +1,10 @@
+{
+  "network": "polygon",
+  "chainId": "137",
+  "deployer": "0xdf0770B63acB67751DF63759dcA89140725f5A62",
+  "contracts": {
+    "TokenFactory": "0x8C6D3D2693AAc34353950e61c0a393efA3E441c2"
+  },
+  "timestamp": "2025-12-06T09:31:09.233Z",
+  "blockNumber": 79954212
+}
