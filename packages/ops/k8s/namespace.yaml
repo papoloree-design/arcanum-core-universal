@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aion-omega
+  labels:
+    name: aion-omega
+    project: aion

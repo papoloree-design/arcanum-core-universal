@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aion-kernel
+  namespace: aion-omega
+  labels:
+    app: aion-kernel
+    component: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: aion-kernel
+  template:
+    metadata:
+      labels:
+        app: aion-kernel
+    spec:
+      containers:
+        - name: kernel
+          image: YOUR_REGISTRY/aion-kernel:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 4000
+              protocol: TCP
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "4000"
+            - name: POLYGON_RPC
+              valueFrom:
+                secretKeyRef:
+                  name: aion-secrets
+                  key: polygon-rpc
+            - name: DEPLOYER_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aion-secrets
+                  key: deployer-key
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 4000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 4000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aion-kernel
+  namespace: aion-omega
+spec:
+  selector:
+    app: aion-kernel
+  ports:
+    - protocol: TCP
+      port: 4000
+      targetPort: 4000
+  type: ClusterIP

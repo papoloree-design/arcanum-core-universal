@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aion-ui
+  namespace: aion-omega
+  labels:
+    app: aion-ui
+    component: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: aion-ui
+  template:
+    metadata:
+      labels:
+        app: aion-ui
+    spec:
+      containers:
+        - name: ui
+          image: YOUR_REGISTRY/aion-ui:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: NEXT_PUBLIC_KERNEL_URL
+              value: "http://aion-kernel:4000"
+            - name: NEXT_PUBLIC_IDENTITY_URL
+              value: "http://aion-identity:4100"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aion-ui
+  namespace: aion-omega
+spec:
+  selector:
+    app: aion-ui
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: LoadBalancer

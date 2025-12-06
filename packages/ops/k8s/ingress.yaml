@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aion-ingress
+  namespace: aion-omega
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+    - hosts:
+        - aion.yourdomain.com
+      secretName: aion-tls
+  rules:
+    - host: aion.yourdomain.com
+      http:
+        paths:
+          - path: /api/kernel
+            pathType: Prefix
+            backend:
+              service:
+                name: aion-kernel
+                port:
+                  number: 4000
+          - path: /api/identity
+            pathType: Prefix
+            backend:
+              service:
+                name: aion-identity
+                port:
+                  number: 4100
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: aion-ui
+                port:
+                  number: 3000
