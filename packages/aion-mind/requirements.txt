@@ -1,0 +1,18 @@
+# Dependencies para AION-MIND
+# Descomentar según necesidad
+
+# Para OpenAI
+# openai>=1.0.0
+
+# Para Anthropic
+# anthropic>=0.8.0
+
+# Para Google
+# google-generativeai>=0.3.0
+
+# Para modelos locales
+# llama-cpp-python>=0.2.0
+
+# Utils
+requests>=2.31.0
+python-dotenv>=1.0.0
