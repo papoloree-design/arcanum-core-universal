@@ -1,0 +1,13 @@
+{
+  "name": "soberano-stack",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "compile": "hardhat compile",
+    "extract-bytecodes": "node scripts/extract-bytecodes.js"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.0"
+  }
+}
