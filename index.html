@@ -1,0 +1,161 @@
+#!/usr/bin/env bash
+set -e
+
+# CONFIG — cámbialo si quieres otra cuenta o repo
+GITHUB_OWNER="papoloree-design"
+REPO_NAME="C42-Ai"
+LOCAL_DIR="$HOME/$REPO_NAME-deploy"
+BRANCH="main"   # puedes cambiar a "gh-pages" si prefieres
+INDEX_FILE="$LOCAL_DIR/index.html"
+
+echo "Preparando deploy a GitHub Pages: ${GITHUB_OWNER}/${REPO_NAME} (branch: $BRANCH)"
+echo "Directorio local: $LOCAL_DIR"
+
+# 1) Crear directorio limpio
+rm -rf "$LOCAL_DIR"
+mkdir -p "$LOCAL_DIR"
+
+# 2) Escribir index.html (contenido: TODO lo generado hoy)
+# --- START index.html content ---
+cat > "$INDEX_FILE" <<'HTML'
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>RMP-AGIWEB / Gognitive – Ecosistema Completo</title>
+<style>
+    body { font-family: "Segoe UI", Roboto, sans-serif; margin:0; padding:0; background:#0d1117; color:#e6edf3; }
+    header { background:#161b22; padding:25px; text-align:center; font-size:28px; font-weight:700; color:#58a6ff; border-bottom:2px solid #30363d; }
+    section { padding:20px 32px; border-bottom:1px solid #21262d; }
+    h2 { color:#58a6ff; margin:0 0 8px 0; }
+    .code { background:#0b1220; padding:14px; border:1px solid #30363d; border-radius:6px; white-space:pre-wrap; font-family:monospace; font-size:13px; overflow:auto; margin-top:10px; }
+    .card { background:#0b1220; border:1px solid #30363d; padding:14px; border-radius:6px; margin-bottom:12px; }
+    ul { margin:8px 0 0 20px; }
+    footer { padding:18px; text-align:center; color:#94a3b8; font-size:13px; }
+</style>
+</head>
+<body>
+<header>🔥 RMP-AGIWEB / Gognitive — Compilado completo (Chat de hoy)</header>
+
+<section>
+<h2>Resumen del Proyecto</h2>
+<div class="card">
+<p>Este archivo contiene TODO lo generado hoy: código, worker, monolito, fixes, reportes, inventario y scripts de prueba.</p>
+<ul>
+<li>Inventario: 75 features, 115 endpoints</li>
+<li>RMP Chain (RMPX), faucet, suscripción freemium/PRO</li>
+<li>Worker.js (mock), emergent-industrial-platform.js (Node monolito), server_fix.py (FastAPI)</li>
+</ul>
+</div>
+</section>
+
+<section>
+<h2>Reporte de Testing (resumen)</h2>
+<div class="code">
+{
+  "summary": "Backend 93.3% success, frontend 95% - issues: ObjectId serialization in checkout & faucet",
+  "total_endpoints": 115,
+  "total_features": 75
+}
+</div>
+</section>
+
+<section>
+<h2>RMP Chain — RMPX (datos)</h2>
+<div class="code">
+{
+  "name": "RMP Chain",
+  "symbol": "RMPX",
+  "decimals": 18,
+  "exchange_rate": { "rmpx_per_usd": 50, "usd_per_rmpx": 0.02 },
+  "subscription_cost": 1000,
+  "faucet_amount": 1000,
+  "staking_apy": "10%",
+  "chain_id": 9999
+}
+</div>
+</section>
+
+<section>
+<h2>Endpoints principales (muestra)</h2>
+<div class="code">
+GET  /api/health
+GET  /api/chains/supported
+GET  /api/gas-prices
+GET  /api/analytics/platform
+GET  /api/rmpx/info
+POST /api/checkout/session
+GET  /api/checkout/status/:sessionId
+POST /api/rmpx/faucet/:userId
+POST /api/deploy-token
+... + 100+ endpoints (DeFi, DEX, NFT, DAO, AI)
+</div>
+</section>
+
+<section>
+<h2>Script de Pruebas (inventario)</h2>
+<div class="code">
+#!/bin/bash
+echo "=== INVENTARIO COMPLETO RMP-AGIWEB ==="
+curl -s http://localhost:8001/api/health
+curl -s http://localhost:8001/api/chains/supported
+curl -s http://localhost:8001/api/gas-prices
+curl -s http://localhost:8001/api/analytics/platform
+curl -s http://localhost:8001/api/rmpx/info
+curl -s http://localhost:8001/api/dex/pairs
+curl -s http://localhost:8001/api/ecosystem/complete
+</div>
+</section>
+
+<footer>Publicado desde script automático — si quieres que incluya más archivos (worker.js, monolito, server_fix.py), te lo agrego al repo.</footer>
+
+</body>
+</html>
+HTML
+# --- END index.html content ---
+
+echo "index.html escrito en: $INDEX_FILE"
+
+# 3) Inicializar git
+cd "$LOCAL_DIR"
+git init
+git checkout -b "$BRANCH"
+
+# 4) Agregar y commitear
+git add index.html
+git commit -m "Deploy: snapshot completo RMP-AGIWEB (Chat de hoy)"
+
+# 5) Crear repo en GitHub si no existe (usa gh CLI)
+if gh repo view "$GITHUB_OWNER/$REPO_NAME" >/dev/null 2>&1; then
+  echo "Repo $GITHUB_OWNER/$REPO_NAME ya existe en GitHub."
+  REMOTE_URL=$(gh repo view "$GITHUB_OWNER/$REPO_NAME" --json sshUrl -q .sshUrl 2>/dev/null || gh repo view "$GITHUB_OWNER/$REPO_NAME" --json httpUrl -q .httpUrl)
+  # prefer https
+  REMOTE_URL=$(gh repo view "$GITHUB_OWNER/$REPO_NAME" --json httpUrl -q .httpUrl)
+else
+  echo "Creando repo $GITHUB_OWNER/$REPO_NAME en GitHub (público)..."
+  gh repo create "$GITHUB_OWNER/$REPO_NAME" --public --source="$LOCAL_DIR" --remote=origin --push
+  REMOTE_URL=$(gh repo view "$GITHUB_OWNER/$REPO_NAME" --json httpUrl -q .httpUrl)
+fi
+
+# 6) Push al repo remoto
+echo "Haciendo push a $REMOTE_URL (branch: $BRANCH)..."
+git remote add origin "$REMOTE_URL" 2>/dev/null || true
+git push -u origin "$BRANCH" --force
+
+# 7) Habilitar GitHub Pages (usar main branch / root)
+echo "Habilitando GitHub Pages para $GITHUB_OWNER/$REPO_NAME desde la rama $BRANCH (root)..."
+# gh api para configurar Pages (si disponible)
+gh api -X PUT /repos/"$GITHUB_OWNER"/"$REPO_NAME"/pages --input - <<JSON || true
+{
+  "source": {
+    "branch": "$BRANCH",
+    "path": "/"
+  }
+}
+JSON
+
+echo "✅ Push completo. Espera unos minutos a que GitHub Pages publique el sitio."
+echo "URL prevista: https://$GITHUB_OWNER.github.io/$REPO_NAME/"
+echo "Si tu repo es USER pages (papoloree-design.github.io), la URL sería: https://$GITHUB_OWNER.github.io/"
+
+exit 0
